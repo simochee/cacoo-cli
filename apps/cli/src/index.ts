@@ -15,7 +15,6 @@ await program.addCommands([
   import("./commands/list"),
   import("./commands/view"),
   import("./commands/open"),
-  import("./commands/export"),
   import("./commands/copy"),
   import("./commands/delete"),
   // Identity

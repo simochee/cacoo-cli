@@ -87,18 +87,12 @@ export class CacooClient {
       responseHeaders[key] = value;
     });
 
-    const text = await response.text();
-    let responseBody: unknown;
-    try {
-      responseBody = JSON.parse(text);
-    } catch {
-      responseBody = text;
-    }
-
     if (!response.ok) {
+      const text = await response.text();
       throw new CacooApiError(response.status, response.statusText, text);
     }
 
+    const responseBody = await response.json();
     return { status: response.status, headers: responseHeaders, body: responseBody };
   }
 
@@ -130,17 +124,6 @@ export class CacooClient {
 
   async copyDiagram(diagramId: string): Promise<Diagram> {
     return this.request<Diagram>("POST", `/diagrams/${diagramId}/copy.json`);
-  }
-
-  async getDiagramContents(diagramId: string): Promise<string> {
-    const url = new URL(`${this.baseUrl}/diagrams/${diagramId}/contents.xml`);
-    url.searchParams.set("apiKey", this.apiKey);
-    const response = await fetch(url.toString());
-    if (!response.ok) {
-      const text = await response.text();
-      throw new CacooApiError(response.status, response.statusText, text);
-    }
-    return response.text();
   }
 
   // --- Comments ---
