@@ -10,9 +10,9 @@ const api = new CacooCommand("api")
     "Make a raw API request to the Cacoo API.\n" +
       "The path is relative to /api/v1. Authentication is handled automatically.",
   )
-  .argument("<method>", "HTTP method (GET, POST, PUT, DELETE)")
+  .argument("<method>", "HTTP method (GET, POST, PUT, DELETE, PATCH)")
   .argument("<path>", "API path (e.g. /diagrams.json)")
-  .option("--body <json>", "Request body as key=value pairs (for POST/PUT)")
+  .option("--body <pairs>", "Request body as key=value pairs (for POST/PUT)")
   .examples([
     { description: "Get diagrams", command: "cacoo api GET /diagrams.json" },
     { description: "Get a specific diagram", command: "cacoo api GET /diagrams/abc123.json" },
@@ -37,8 +37,8 @@ const api = new CacooCommand("api")
 
     const client = createClient();
     const result = await client.rawRequest(upperMethod, path, bodyParams);
-    const json = JSON.stringify(result.body, null, 2);
-    process.stdout.write(json + "\n");
+    const output = typeof result.body === "string" ? result.body : JSON.stringify(result.body, null, 2);
+    process.stdout.write(output + "\n");
   });
 
 export default api;

@@ -115,7 +115,10 @@ export class CacooClient {
       throw new CacooApiError(response.status, response.statusText, text);
     }
 
-    const responseBody = await response.json();
+    const contentType = response.headers.get("content-type") ?? "";
+    const responseBody = contentType.includes("application/json")
+      ? await response.json()
+      : await response.text();
     return { status: response.status, headers: responseHeaders, body: responseBody };
   }
 
