@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "rootDir": ".",
+    "types": ["bun-types"],
+    "paths": {
+      "@cacoo/api": ["./packages/cacoo-api/src/index.ts"],
+      "@cacoo/cli-utils": ["./packages/cli-utils/src/index.ts"],
+      "@cacoo/config": ["./packages/config/src/index.ts"],
+      "@cacoo/test-utils": ["./packages/test-utils/src/index.ts"]
+    }
+  },
+  "include": ["apps/*/src/**/*.ts", "packages/*/src/**/*.ts"]
+}
