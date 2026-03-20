@@ -6,13 +6,15 @@ cacoo-cli is a CLI for the Cacoo diagramming service, structured as a Bun monore
 
 ## Package Names
 
-| Package | Name | Private |
-|---------|------|---------|
-| CLI app | `@simochee/cacoo-cli` | false |
-| API client | `@repo/cacoo-api` | true |
-| CLI utilities | `@repo/cli-utils` | true |
-| Config | `@repo/config` | true |
-| Test utilities | `@repo/test-utils` | true |
+All workspace packages are renamed from `@cacoo/*` to `@repo/*` (private). All imports across the codebase must be updated accordingly.
+
+| Package | Current Name | New Name | Private |
+|---------|-------------|----------|---------|
+| CLI app | `cacoo-cli` | `@simochee/cacoo-cli` | false |
+| API client | `@cacoo/api` | `@repo/cacoo-api` | true |
+| CLI utilities | `@cacoo/cli-utils` | `@repo/cli-utils` | true |
+| Config | `@cacoo/config` | `@repo/config` | true |
+| Test utilities | `@cacoo/test-utils` | `@repo/test-utils` | true |
 
 ## 1. Config Package (`@repo/config`)
 
@@ -56,13 +58,44 @@ type CacooConfig = v.InferOutput<typeof ConfigSchema>;
 
 ### Functions
 
+```typescript
+loadConfig(): CacooConfig
+writeConfig(config: CacooConfig): void
+updateConfig(updater: (config: CacooConfig) => CacooConfig): void
+updateAuth(auth: CacooAuth): void
+resolveAuth(): { method: string; apiKey?: string; accessToken?: string } | undefined
+resolveOrganization(override?: string): string | undefined
+getConfigPath(): string
+```
+
 - `loadConfig()`: Read and validate with valibot. Return default `{ }` if missing.
 - `writeConfig(config)`: Persist to disk via rc9.
 - `updateConfig(updater)`: Atomic read-modify-write.
 - `updateAuth(auth)`: Shorthand for updating auth field.
 - `resolveAuth()`: Env vars (`CACOO_API_KEY`) > config file.
-- `resolveOrganization(override?)`: CLI flag > env var (`CACOO_ORGANIZATION`) > config `defaultOrganization`.
+- `resolveOrganization(override?)`: CLI flag > env var (`CACOO_ORGANIZATION`) > config `defaultOrganization`. Accepts optional override from `--org` flag.
 - `getConfigPath()`: Return config file location.
+
+### Dependencies
+
+- `rc9`: Config file management (added to `@repo/config`)
+- `valibot`: Schema validation (added to `@repo/config`)
+
+### OAuth Credentials Storage
+
+OAuth `clientId` and `clientSecret` are stored in the config file alongside tokens (same pattern as bee). This is necessary for automatic token refresh on 401 responses. The config file is protected with `0o600` permissions. During login, `clientId`/`clientSecret` come from environment variables or interactive prompts, then are persisted for future refresh operations.
+
+**Token refresh flow** (existing, unchanged):
+1. API call returns 401
+2. `client-factory.ts` Proxy intercepts, calls `refreshAccessToken(clientId, clientSecret, refreshToken)`
+3. New tokens are saved to config via `updateAuth()`
+4. Original request is retried
+
+All four OAuth fields (`accessToken`, `refreshToken`, `clientId`, `clientSecret`) are required in the schema.
+
+### Migration
+
+The config file format changes from JSON (`config.json`) to rc9 format (`config`). Since this is a pre-release project with no existing users, no migration path is needed. The old `config.json` file can be manually deleted.
 
 ### Environment Variables
 
@@ -122,9 +155,18 @@ splitArg(input, schema): string[]
 - Current: uses shell string interpolation with unsanitized API response URL
 - Fix: use `execFileSync` with argument array to bypass shell interpretation
 
+```typescript
+// macOS
+execFileSync("open", [url]);
+// Windows
+execFileSync("cmd", ["/c", "start", "", url]);
+// Linux
+execFileSync("xdg-open", [url]);
+```
+
 ### Command Injection in `login.ts`
 - Current: uses shell string interpolation for opening browser
-- Fix: use `execFile` with argument array
+- Fix: use `execFile` with argument array (same pattern as open.ts)
 
 ## 5. API Client
 
@@ -139,7 +181,9 @@ splitArg(input, schema): string[]
 ## 6. Toolchain
 
 - **Keep Bun** for workspaces, build, and test
-- **Add dependencies**: consola, rc9, valibot
+- **Add dependencies**:
+  - `@repo/config`: rc9, valibot
+  - `@repo/cli-utils`: consola
 - **No changes** to oxlint, TypeScript config
 
 ## Non-Goals
