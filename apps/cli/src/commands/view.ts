@@ -1,6 +1,6 @@
-import { CacooCommand } from "../../lib/cacoo-command";
-import { createClient } from "../../lib/client-factory";
-import { jsonOption } from "../../lib/common-options";
+import { CacooCommand } from "../lib/cacoo-command";
+import { createClient } from "../lib/client-factory";
+import { jsonOption, orgOption } from "../lib/common-options";
 import { outputResult } from "@cacoo/cli-utils";
 import type { Diagram } from "@cacoo/api";
 
@@ -9,17 +9,15 @@ const view = new CacooCommand("view")
   .description("Display detailed information about a specific diagram.")
   .argument("<diagram-id>", "The diagram ID")
   .addOption(jsonOption())
+  .addOption(orgOption())
   .examples([
-    {
-      description: "View diagram details",
-      command: "cacoo diagram view abc123",
-    },
+    { description: "View diagram details", command: "cacoo view abc123" },
     {
       description: "View as JSON with specific fields",
-      command: "cacoo diagram view abc123 --json title,url",
+      command: "cacoo view abc123 --json title,url",
     },
   ])
-  .action(async (diagramId: string, options: { json?: string }) => {
+  .action(async (diagramId: string, options: { json?: string; org?: string }) => {
     const client = createClient();
     const diagram = await client.getDiagram(diagramId);
 

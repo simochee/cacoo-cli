@@ -5,6 +5,7 @@ import { join } from "node:path";
 export interface CacooConfig {
   apiKey?: string;
   baseUrl?: string;
+  organization?: string;
 }
 
 const CONFIG_DIR = join(homedir(), ".config", "cacoo-cli");
@@ -34,4 +35,8 @@ export function updateConfig(partial: Partial<CacooConfig>): void {
 
 export function resolveApiKey(): string | undefined {
   return process.env.CACOO_API_KEY ?? loadConfig().apiKey;
+}
+
+export function resolveOrganization(): string | undefined {
+  return process.env.CACOO_ORGANIZATION ?? loadConfig().organization;
 }

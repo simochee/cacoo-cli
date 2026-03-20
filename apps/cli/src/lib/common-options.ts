@@ -18,3 +18,10 @@ export function jsonOption(): Option {
 export function sortOption(): Option {
   return new Option("--sort <field>", "Sort field");
 }
+
+export function orgOption(): Option {
+  return new Option(
+    "--org <organization>",
+    "Target organization key (overrides CACOO_ORGANIZATION)",
+  );
+}

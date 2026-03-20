@@ -1,6 +1,6 @@
 import { CacooCommand } from "../../lib/cacoo-command";
 import { createClient } from "../../lib/client-factory";
-import { offsetOption, limitOption, jsonOption } from "../../lib/common-options";
+import { offsetOption, limitOption, jsonOption, orgOption } from "../../lib/common-options";
 import { outputResult, printTable } from "@cacoo/cli-utils";
 import type { Comment } from "@cacoo/api";
 
@@ -11,14 +11,13 @@ const list = new CacooCommand("list")
   .addOption(offsetOption())
   .addOption(limitOption())
   .addOption(jsonOption())
-  .examples([
-    {
-      description: "List comments",
-      command: "cacoo comment list abc123",
-    },
-  ])
+  .addOption(orgOption())
+  .examples([{ description: "List comments", command: "cacoo comment list abc123" }])
   .action(
-    async (diagramId: string, options: { offset?: number; limit?: number; json?: string }) => {
+    async (
+      diagramId: string,
+      options: { offset?: number; limit?: number; json?: string; org?: string },
+    ) => {
       const client = createClient();
       const result = await client.listComments(diagramId, {
         offset: options.offset,

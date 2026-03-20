@@ -7,6 +7,14 @@ function createClient() {
   return new CacooClient({ apiKey: "test-key", baseUrl: MOCK_BASE_URL });
 }
 
+function mockFetch(fn: () => Promise<Response>) {
+  const mocked = mock(
+    fn as (input: string | URL | Request, init?: RequestInit) => Promise<Response>,
+  );
+  globalThis.fetch = mocked as unknown as typeof fetch;
+  return mocked;
+}
+
 describe("CacooClient", () => {
   const originalFetch = globalThis.fetch;
 
@@ -30,7 +38,7 @@ describe("CacooClient", () => {
         count: 1,
       };
 
-      globalThis.fetch = mock(() =>
+      const mocked = mockFetch(() =>
         Promise.resolve(
           new Response(JSON.stringify(mockResponse), {
             status: 200,
@@ -46,7 +54,7 @@ describe("CacooClient", () => {
       expect(result.result[0].diagramId).toBe("abc123");
       expect(result.result[0].title).toBe("Test Diagram");
 
-      const calledUrl = (globalThis.fetch as ReturnType<typeof mock>).mock.calls[0][0] as string;
+      const calledUrl = mocked.mock.calls[0][0] as string;
       expect(calledUrl).toContain("/diagrams.json");
       expect(calledUrl).toContain("apiKey=test-key");
       expect(calledUrl).toContain("offset=0");
@@ -62,7 +70,7 @@ describe("CacooClient", () => {
         url: "https://cacoo.com/diagrams/abc123",
       };
 
-      globalThis.fetch = mock(() =>
+      const mocked = mockFetch(() =>
         Promise.resolve(
           new Response(JSON.stringify(mockDiagram), {
             status: 200,
@@ -77,19 +85,19 @@ describe("CacooClient", () => {
       expect(result.diagramId).toBe("abc123");
       expect(result.title).toBe("My Diagram");
 
-      const calledUrl = (globalThis.fetch as ReturnType<typeof mock>).mock.calls[0][0] as string;
+      const calledUrl = mocked.mock.calls[0][0] as string;
       expect(calledUrl).toContain("/diagrams/abc123.json");
     });
   });
 
   describe("deleteDiagram", () => {
     it("sends DELETE request", async () => {
-      globalThis.fetch = mock(() => Promise.resolve(new Response("{}", { status: 200 })));
+      const mocked = mockFetch(() => Promise.resolve(new Response("{}", { status: 200 })));
 
       const client = createClient();
       await client.deleteDiagram("abc123");
 
-      const calledArgs = (globalThis.fetch as ReturnType<typeof mock>).mock.calls[0];
+      const calledArgs = mocked.mock.calls[0];
       expect(calledArgs[0]).toContain("/diagrams/abc123.json");
       expect((calledArgs[1] as RequestInit).method).toBe("DELETE");
     });
@@ -99,7 +107,7 @@ describe("CacooClient", () => {
     it("sends POST to copy endpoint", async () => {
       const mockDiagram = { diagramId: "copy123", title: "Copy of Diagram" };
 
-      globalThis.fetch = mock(() =>
+      const mocked = mockFetch(() =>
         Promise.resolve(
           new Response(JSON.stringify(mockDiagram), {
             status: 200,
@@ -112,31 +120,29 @@ describe("CacooClient", () => {
       const result = await client.copyDiagram("abc123");
 
       expect(result.diagramId).toBe("copy123");
-      const calledUrl = (globalThis.fetch as ReturnType<typeof mock>).mock.calls[0][0] as string;
+      const calledUrl = mocked.mock.calls[0][0] as string;
       expect(calledUrl).toContain("/diagrams/abc123/copy.json");
     });
   });
 
   describe("listComments", () => {
     it("fetches comments for a diagram", async () => {
-      const mockResponse = {
-        result: [
-          {
-            commentId: 1,
-            content: "Great work!",
-            user: { name: "user1", nickname: "User One" },
-            created: "2024-01-01",
-          },
-        ],
-        count: 1,
-      };
-
-      globalThis.fetch = mock(() =>
+      mockFetch(() =>
         Promise.resolve(
-          new Response(JSON.stringify(mockResponse), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-          }),
+          new Response(
+            JSON.stringify({
+              result: [
+                {
+                  commentId: 1,
+                  content: "Great work!",
+                  user: { name: "user1", nickname: "User One" },
+                  created: "2024-01-01",
+                },
+              ],
+              count: 1,
+            }),
+            { status: 200, headers: { "Content-Type": "application/json" } },
+          ),
         ),
       );
 
@@ -150,18 +156,16 @@ describe("CacooClient", () => {
 
   describe("createComment", () => {
     it("posts a new comment", async () => {
-      const mockComment = {
-        commentId: 2,
-        content: "New comment",
-        user: { name: "user1", nickname: "User One" },
-      };
-
-      globalThis.fetch = mock(() =>
+      const mocked = mockFetch(() =>
         Promise.resolve(
-          new Response(JSON.stringify(mockComment), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-          }),
+          new Response(
+            JSON.stringify({
+              commentId: 2,
+              content: "New comment",
+              user: { name: "user1", nickname: "User One" },
+            }),
+            { status: 200, headers: { "Content-Type": "application/json" } },
+          ),
         ),
       );
 
@@ -169,7 +173,7 @@ describe("CacooClient", () => {
       const result = await client.createComment("abc123", "New comment");
 
       expect(result.content).toBe("New comment");
-      const calledArgs = (globalThis.fetch as ReturnType<typeof mock>).mock.calls[0];
+      const calledArgs = mocked.mock.calls[0];
       expect((calledArgs[1] as RequestInit).method).toBe("POST");
       expect((calledArgs[1] as RequestInit).body).toContain("content=New+comment");
     });
@@ -177,17 +181,15 @@ describe("CacooClient", () => {
 
   describe("listFolders", () => {
     it("fetches folders", async () => {
-      const mockResponse = {
-        result: [{ folderId: 1, folderName: "My Folder", type: "normal" }],
-        count: 1,
-      };
-
-      globalThis.fetch = mock(() =>
+      mockFetch(() =>
         Promise.resolve(
-          new Response(JSON.stringify(mockResponse), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-          }),
+          new Response(
+            JSON.stringify({
+              result: [{ folderId: 1, folderName: "My Folder", type: "normal" }],
+              count: 1,
+            }),
+            { status: 200, headers: { "Content-Type": "application/json" } },
+          ),
         ),
       );
 
@@ -201,19 +203,17 @@ describe("CacooClient", () => {
 
   describe("getAccount", () => {
     it("fetches account info", async () => {
-      const mockAccount = {
-        name: "testuser",
-        nickname: "Test User",
-        type: "free",
-        imageUrl: "https://example.com/avatar.png",
-      };
-
-      globalThis.fetch = mock(() =>
+      mockFetch(() =>
         Promise.resolve(
-          new Response(JSON.stringify(mockAccount), {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-          }),
+          new Response(
+            JSON.stringify({
+              name: "testuser",
+              nickname: "Test User",
+              type: "free",
+              imageUrl: "https://example.com/avatar.png",
+            }),
+            { status: 200, headers: { "Content-Type": "application/json" } },
+          ),
         ),
       );
 
@@ -225,9 +225,49 @@ describe("CacooClient", () => {
     });
   });
 
+  describe("rawRequest", () => {
+    it("returns status, headers, and body", async () => {
+      mockFetch(() =>
+        Promise.resolve(
+          new Response(JSON.stringify({ key: "value" }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          }),
+        ),
+      );
+
+      const client = createClient();
+      const result = await client.rawRequest("GET", "/test.json");
+
+      expect(result.status).toBe(200);
+      expect(result.body).toEqual({ key: "value" });
+    });
+
+    it("throws CacooApiError on failure", async () => {
+      mockFetch(() =>
+        Promise.resolve(
+          new Response('{"error":"Not found"}', {
+            status: 404,
+            statusText: "Not Found",
+          }),
+        ),
+      );
+
+      const client = createClient();
+
+      try {
+        await client.rawRequest("GET", "/not-found.json");
+        expect(true).toBe(false);
+      } catch (err) {
+        expect(err).toBeInstanceOf(CacooApiError);
+        expect((err as CacooApiError).status).toBe(404);
+      }
+    });
+  });
+
   describe("error handling", () => {
     it("throws CacooApiError on non-ok response", async () => {
-      globalThis.fetch = mock(() =>
+      mockFetch(() =>
         Promise.resolve(
           new Response('{"error":"Not found"}', {
             status: 404,
@@ -240,7 +280,7 @@ describe("CacooClient", () => {
 
       try {
         await client.getDiagram("nonexistent");
-        expect(true).toBe(false); // Should not reach
+        expect(true).toBe(false);
       } catch (err) {
         expect(err).toBeInstanceOf(CacooApiError);
         const apiErr = err as CacooApiError;

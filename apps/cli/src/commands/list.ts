@@ -1,6 +1,12 @@
-import { CacooCommand } from "../../lib/cacoo-command";
-import { createClient } from "../../lib/client-factory";
-import { offsetOption, limitOption, jsonOption, sortOption } from "../../lib/common-options";
+import { CacooCommand } from "../lib/cacoo-command";
+import { createClient } from "../lib/client-factory";
+import {
+  offsetOption,
+  limitOption,
+  jsonOption,
+  sortOption,
+  orgOption,
+} from "../lib/common-options";
 import { outputResult, printTable } from "@cacoo/cli-utils";
 import type { Diagram } from "@cacoo/api";
 
@@ -10,19 +16,15 @@ const list = new CacooCommand("list")
   .addOption(offsetOption())
   .addOption(limitOption())
   .addOption(sortOption())
+  .addOption(orgOption())
   .option("--folder-id <id>", "Filter by folder ID", Number)
   .option("--type <type>", "Filter by diagram type")
   .addOption(jsonOption())
   .examples([
-    { description: "List all diagrams", command: "cacoo diagram list" },
-    {
-      description: "List diagrams as JSON",
-      command: "cacoo diagram list --json",
-    },
-    {
-      description: "List diagrams in a folder",
-      command: "cacoo diagram list --folder-id 123",
-    },
+    { description: "List all diagrams", command: "cacoo list" },
+    { description: "List diagrams as JSON", command: "cacoo list --json" },
+    { description: "List diagrams in a folder", command: "cacoo list --folder-id 123" },
+    { description: "List diagrams for an org", command: "cacoo list --org my-org" },
   ])
   .action(
     async (options: {
@@ -32,6 +34,7 @@ const list = new CacooCommand("list")
       folderId?: number;
       type?: string;
       json?: string;
+      org?: string;
     }) => {
       const client = createClient();
       const result = await client.listDiagrams({

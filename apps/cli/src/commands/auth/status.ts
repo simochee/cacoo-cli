@@ -1,10 +1,10 @@
 import { CacooCommand } from "../../lib/cacoo-command";
-import { resolveApiKey, getConfigPath } from "@cacoo/config";
+import { resolveApiKey, resolveOrganization, getConfigPath } from "@cacoo/config";
 import { CacooClient } from "@cacoo/api";
 
 const status = new CacooCommand("status")
   .summary("Show authentication status")
-  .description("Display the current authentication status and account info.")
+  .description("Display the current authentication status, account info, and active organization.")
   .action(async () => {
     const apiKey = resolveApiKey();
     if (!apiKey) {
@@ -18,11 +18,15 @@ const status = new CacooCommand("status")
       const account = await client.getAccount();
       console.log(`Logged in as ${account.nickname ?? account.name}`);
       console.log(`Account type: ${account.type}`);
-      console.log(`Config file: ${getConfigPath()}`);
     } catch {
       console.log("API key is set but could not verify.");
-      console.log(`Config file: ${getConfigPath()}`);
     }
+
+    const org = resolveOrganization();
+    if (org) {
+      console.log(`Organization: ${org}`);
+    }
+    console.log(`Config file: ${getConfigPath()}`);
   });
 
 export default status;

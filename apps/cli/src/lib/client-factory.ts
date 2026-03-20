@@ -1,6 +1,11 @@
 import { CacooClient } from "@cacoo/api";
-import { resolveApiKey, loadConfig } from "@cacoo/config";
+import { resolveApiKey, resolveOrganization, loadConfig } from "@cacoo/config";
 import { UserError } from "@cacoo/cli-utils";
+
+export interface ClientContext {
+  client: CacooClient;
+  organization: string | undefined;
+}
 
 export function createClient(): CacooClient {
   const apiKey = resolveApiKey();
@@ -9,4 +14,8 @@ export function createClient(): CacooClient {
   }
   const config = loadConfig();
   return new CacooClient({ apiKey, baseUrl: config.baseUrl });
+}
+
+export function resolveOrg(orgOverride?: string): string | undefined {
+  return orgOverride ?? resolveOrganization();
 }

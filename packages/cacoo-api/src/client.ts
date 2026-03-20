@@ -66,6 +66,42 @@ export class CacooClient {
     return response.json() as Promise<T>;
   }
 
+  async rawRequest(
+    method: string,
+    path: string,
+    body?: Record<string, string>,
+  ): Promise<{ status: number; headers: Record<string, string>; body: unknown }> {
+    const url = new URL(`${this.baseUrl}${path}`);
+    url.searchParams.set("apiKey", this.apiKey);
+
+    const init: RequestInit = { method: method.toUpperCase() };
+
+    if (body) {
+      init.headers = { "Content-Type": "application/x-www-form-urlencoded" };
+      init.body = new URLSearchParams(body).toString();
+    }
+
+    const response = await fetch(url.toString(), init);
+    const responseHeaders: Record<string, string> = {};
+    response.headers.forEach((value, key) => {
+      responseHeaders[key] = value;
+    });
+
+    const text = await response.text();
+    let responseBody: unknown;
+    try {
+      responseBody = JSON.parse(text);
+    } catch {
+      responseBody = text;
+    }
+
+    if (!response.ok) {
+      throw new CacooApiError(response.status, response.statusText, text);
+    }
+
+    return { status: response.status, headers: responseHeaders, body: responseBody };
+  }
+
   // --- Diagrams ---
 
   async listDiagrams(params?: {
