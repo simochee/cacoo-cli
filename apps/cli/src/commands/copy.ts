@@ -3,6 +3,7 @@ import { createClient, resolveOrg } from "../lib/client-factory";
 import { jsonOption, orgOption } from "../lib/common-options";
 import { outputResult } from "@repo/cli-utils";
 import type { Diagram } from "@repo/cacoo-api";
+import consola from "consola";
 
 const copy = new CacooCommand("copy")
   .summary("Copy a diagram")
@@ -17,9 +18,9 @@ const copy = new CacooCommand("copy")
     const diagram = await client.copyDiagram(diagramId);
 
     outputResult(diagram, options.json, (d: Diagram) => {
-      console.log(`Copied diagram: ${d.title}`);
-      console.log(`New ID: ${d.diagramId}`);
-      console.log(`URL: ${d.url}`);
+      consola.info(`Copied diagram: ${d.title}`);
+      consola.log(`New ID: ${d.diagramId}`);
+      consola.log(`URL: ${d.url}`);
     });
   });
 

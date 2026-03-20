@@ -1,5 +1,6 @@
 import { CacooCommand } from "../../lib/cacoo-command";
 import { updateConfig } from "@repo/config";
+import consola from "consola";
 
 const logout = new CacooCommand("logout")
   .summary("Remove stored authentication")
@@ -9,7 +10,7 @@ const logout = new CacooCommand("logout")
       const { auth: _, ...rest } = config;
       return rest;
     });
-    console.log("Logged out.");
+    consola.info("Logged out.");
   });
 
 export default logout;

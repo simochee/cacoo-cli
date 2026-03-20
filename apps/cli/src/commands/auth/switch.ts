@@ -1,6 +1,7 @@
 import { CacooCommand } from "../../lib/cacoo-command";
 import { updateConfig } from "@repo/config";
 import { createClient } from "../../lib/client-factory";
+import consola from "consola";
 
 const switchCmd = new CacooCommand("switch")
   .summary("Switch the active organization")
@@ -18,7 +19,7 @@ const switchCmd = new CacooCommand("switch")
     const org = await client.getOrganization(orgKey);
 
     updateConfig((config) => ({ ...config, defaultOrganization: orgKey }));
-    console.log(`Switched to organization: ${org.name} (${org.key})`);
+    consola.info(`Switched to organization: ${org.name} (${org.key})`);
   });
 
 export default switchCmd;

@@ -1,5 +1,6 @@
 import { CacooCommand } from "../../lib/cacoo-command";
 import { resolveAuth } from "@repo/config";
+import { UserError } from "@repo/cli-utils";
 
 const token = new CacooCommand("token")
   .summary("Print the auth token")
@@ -11,8 +12,7 @@ const token = new CacooCommand("token")
   .action(() => {
     const auth = resolveAuth();
     if (!auth) {
-      console.error("Not authenticated. Run `cacoo auth login`.");
-      process.exit(1);
+      throw new UserError("Not authenticated. Run `cacoo auth login`.");
     }
 
     const value = auth.method === "api-key" ? auth.apiKey : auth.accessToken;

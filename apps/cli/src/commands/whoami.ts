@@ -18,9 +18,9 @@ const whoami = new CacooCommand("whoami")
     const acct = await client.getAccount();
 
     outputResult(acct, options.json, (a: Account) => {
-      console.log(`Name:     ${a.name}`);
-      console.log(`Nickname: ${a.nickname}`);
-      console.log(`Type:     ${a.type}`);
+      consola.log(`Name:     ${a.name}`);
+      consola.log(`Nickname: ${a.nickname}`);
+      consola.log(`Type:     ${a.type}`);
     });
   });
 

@@ -1,6 +1,7 @@
 import { CacooCommand } from "../../lib/cacoo-command";
 import { resolveAuth, resolveOrganization, getConfigPath } from "@repo/config";
 import { CacooClient } from "@repo/cacoo-api";
+import consola from "consola";
 
 const status = new CacooCommand("status")
   .summary("Show authentication status")
@@ -8,12 +9,12 @@ const status = new CacooCommand("status")
   .action(async () => {
     const auth = resolveAuth();
     if (!auth) {
-      console.log("Not logged in.");
-      console.log(`Config file: ${getConfigPath()}`);
+      consola.info("Not logged in.");
+      consola.info(`Config file: ${getConfigPath()}`);
       process.exit(1);
     }
 
-    console.log(`Auth method: ${auth.method}`);
+    consola.info(`Auth method: ${auth.method}`);
 
     const clientOptions =
       auth.method === "api-key"
@@ -23,17 +24,17 @@ const status = new CacooCommand("status")
     const client = new CacooClient(clientOptions);
     try {
       const account = await client.getAccount();
-      console.log(`Logged in as ${account.nickname ?? account.name}`);
-      console.log(`Account type: ${account.type}`);
+      consola.info(`Logged in as ${account.nickname ?? account.name}`);
+      consola.info(`Account type: ${account.type}`);
     } catch {
-      console.log("Credentials are set but could not verify.");
+      consola.info("Credentials are set but could not verify.");
     }
 
     const org = resolveOrganization();
     if (org) {
-      console.log(`Organization: ${org}`);
+      consola.info(`Organization: ${org}`);
     }
-    console.log(`Config file: ${getConfigPath()}`);
+    consola.info(`Config file: ${getConfigPath()}`);
   });
 
 export default status;

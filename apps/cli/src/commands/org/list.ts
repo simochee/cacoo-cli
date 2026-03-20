@@ -3,6 +3,7 @@ import { createClient } from "../../lib/client-factory";
 import { jsonOption } from "../../lib/common-options";
 import { outputResult, printTable } from "@repo/cli-utils";
 import type { Organization } from "@repo/cacoo-api";
+import consola from "consola";
 
 const list = new CacooCommand("list")
   .summary("List organizations")
@@ -15,7 +16,7 @@ const list = new CacooCommand("list")
 
     outputResult(result.result, options.json, (orgs: Organization[]) => {
       if (orgs.length === 0) {
-        console.log("No organizations found.");
+        consola.info("No organizations found.");
         return;
       }
       printTable(

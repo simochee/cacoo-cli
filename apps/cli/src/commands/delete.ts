@@ -2,6 +2,7 @@ import { CacooCommand } from "../lib/cacoo-command";
 import { createClient, resolveOrg } from "../lib/client-factory";
 import { orgOption } from "../lib/common-options";
 import { confirmOrExit } from "@repo/cli-utils";
+import consola from "consola";
 
 const del = new CacooCommand("delete")
   .summary("Delete a diagram")
@@ -21,7 +22,7 @@ const del = new CacooCommand("delete")
     await confirmOrExit(`Delete diagram "${diagram.title}" (${diagramId})?`, options.yes);
 
     await client.deleteDiagram(diagramId);
-    console.log(`Deleted diagram ${diagramId}.`);
+    consola.info(`Deleted diagram ${diagramId}.`);
   });
 
 export default del;

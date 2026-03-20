@@ -3,6 +3,7 @@ import { createClient, resolveOrg } from "../../lib/client-factory";
 import { jsonOption, orgOption } from "../../lib/common-options";
 import { outputResult } from "@repo/cli-utils";
 import type { Folder } from "@repo/cacoo-api";
+import consola from "consola";
 
 const create = new CacooCommand("create")
   .summary("Create a folder")
@@ -22,8 +23,8 @@ const create = new CacooCommand("create")
     const folder = await client.createFolder(name);
 
     outputResult(folder, options.json, (f: Folder) => {
-      console.log(`Created folder: ${f.folderName}`);
-      console.log(`ID: ${f.folderId}`);
+      consola.info(`Created folder: ${f.folderName}`);
+      consola.log(`ID: ${f.folderId}`);
     });
   });
 

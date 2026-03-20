@@ -3,6 +3,7 @@ import { createClient, resolveOrg } from "../../lib/client-factory";
 import { offsetOption, limitOption, jsonOption, orgOption } from "../../lib/common-options";
 import { outputResult, printTable } from "@repo/cli-utils";
 import type { Comment } from "@repo/cacoo-api";
+import consola from "consola";
 
 const list = new CacooCommand("list")
   .summary("List comments on a diagram")
@@ -27,7 +28,7 @@ const list = new CacooCommand("list")
 
       outputResult(result.result, options.json, (comments: Comment[]) => {
         if (comments.length === 0) {
-          console.log("No comments found.");
+          consola.info("No comments found.");
           return;
         }
         printTable(

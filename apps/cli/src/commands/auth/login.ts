@@ -7,6 +7,8 @@ import {
   exchangeAuthorizationCode,
   startCallbackServer,
 } from "@repo/cacoo-api";
+import { UserError } from "@repo/cli-utils";
+import consola from "consola";
 
 const DEFAULT_OAUTH_PORT = 5033;
 
@@ -57,18 +59,16 @@ async function loginWithApiKey(withToken?: boolean): Promise<void> {
   }
 
   if (!apiKey) {
-    console.error("Error: No API key provided.");
-    process.exit(1);
+    throw new UserError("No API key provided.");
   }
 
   const client = new CacooClient({ apiKey });
   try {
     const account = await client.getAccount();
     updateAuth({ method: "api-key", apiKey });
-    console.log(`Logged in as ${account.nickname ?? account.name}`);
+    consola.info(`Logged in as ${account.nickname ?? account.name}`);
   } catch {
-    console.error("Error: Invalid API key or network error.");
-    process.exit(1);
+    throw new UserError("Invalid API key or network error.");
   }
 }
 
@@ -77,11 +77,10 @@ async function loginWithOAuth(): Promise<void> {
   const clientSecret = process.env.CACOO_OAUTH_CLIENT_SECRET;
 
   if (!clientId || !clientSecret) {
-    console.error(
-      "Error: CACOO_OAUTH_CLIENT_ID and CACOO_OAUTH_CLIENT_SECRET must be set.\n" +
+    throw new UserError(
+      "CACOO_OAUTH_CLIENT_ID and CACOO_OAUTH_CLIENT_SECRET must be set.\n" +
         "Register an OAuth client in your Nulab Account settings.",
     );
-    process.exit(1);
   }
 
   const port = Number(process.env.CACOO_OAUTH_PORT) || DEFAULT_OAUTH_PORT;
@@ -91,7 +90,7 @@ async function loginWithOAuth(): Promise<void> {
   const server = startCallbackServer(port);
 
   const authUrl = buildAuthorizationUrl({ clientId, redirectUri, state });
-  console.log(`Opening browser for authentication...\n\n  ${authUrl}\n`);
+  consola.info(`Opening browser for authentication...\n\n  ${authUrl}\n`);
 
   // Try to open the browser
   const { execFile } = await import("node:child_process");
@@ -125,10 +124,9 @@ async function loginWithOAuth(): Promise<void> {
       clientSecret,
     });
 
-    console.log(`Logged in as ${account.nickname ?? account.name} (OAuth)`);
+    consola.info(`Logged in as ${account.nickname ?? account.name} (OAuth)`);
   } catch (error) {
-    console.error(`Error: ${error instanceof Error ? error.message : String(error)}`);
-    process.exit(1);
+    throw new UserError(error instanceof Error ? error.message : String(error));
   } finally {
     server.stop();
   }

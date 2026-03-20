@@ -3,6 +3,7 @@ import { createClient, resolveOrg } from "../../lib/client-factory";
 import { offsetOption, limitOption, jsonOption, orgOption } from "../../lib/common-options";
 import { outputResult, printTable } from "@repo/cli-utils";
 import type { Folder } from "@repo/cacoo-api";
+import consola from "consola";
 
 const list = new CacooCommand("list")
   .summary("List folders")
@@ -31,7 +32,7 @@ const list = new CacooCommand("list")
 
       outputResult(result.result, options.json, (folders: Folder[]) => {
         if (folders.length === 0) {
-          console.log("No folders found.");
+          consola.info("No folders found.");
           return;
         }
         printTable(

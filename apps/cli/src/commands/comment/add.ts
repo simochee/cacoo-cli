@@ -3,6 +3,7 @@ import { createClient, resolveOrg } from "../../lib/client-factory";
 import { jsonOption, orgOption } from "../../lib/common-options";
 import { outputResult } from "@repo/cli-utils";
 import type { Comment } from "@repo/cacoo-api";
+import consola from "consola";
 
 const add = new CacooCommand("add")
   .summary("Add a comment to a diagram")
@@ -23,8 +24,8 @@ const add = new CacooCommand("add")
     const comment = await client.createComment(diagramId, options.body);
 
     outputResult(comment, options.json, (c: Comment) => {
-      console.log(`Comment added by ${c.user.nickname ?? c.user.name}`);
-      console.log(c.content);
+      consola.info(`Comment added by ${c.user.nickname ?? c.user.name}`);
+      consola.log(c.content);
     });
   });
 

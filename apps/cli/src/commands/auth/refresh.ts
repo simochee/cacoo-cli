@@ -1,6 +1,8 @@
 import { CacooCommand } from "../../lib/cacoo-command";
 import { loadConfig, updateAuth } from "@repo/config";
 import { CacooClient, refreshAccessToken } from "@repo/cacoo-api";
+import { UserError } from "@repo/cli-utils";
+import consola from "consola";
 
 const refresh = new CacooCommand("refresh")
   .summary("Refresh the OAuth access token")
@@ -10,13 +12,11 @@ const refresh = new CacooCommand("refresh")
     const auth = config.auth;
 
     if (!auth || auth.method !== "oauth") {
-      console.error("Not authenticated with OAuth. Run `cacoo auth login --method oauth`.");
-      process.exit(1);
+      throw new UserError("Not authenticated with OAuth. Run `cacoo auth login --method oauth`.");
     }
 
     if (!auth.clientId || !auth.clientSecret) {
-      console.error("OAuth client credentials not stored. Re-authenticate with `cacoo auth login --method oauth`.");
-      process.exit(1);
+      throw new UserError("OAuth client credentials not stored. Re-authenticate with `cacoo auth login --method oauth`.");
     }
 
     const tokens = await refreshAccessToken({
@@ -36,7 +36,7 @@ const refresh = new CacooCommand("refresh")
       clientSecret: auth.clientSecret,
     });
 
-    console.log(`Token refreshed. Logged in as ${account.nickname ?? account.name}`);
+    consola.info(`Token refreshed. Logged in as ${account.nickname ?? account.name}`);
   });
 
 export default refresh;
