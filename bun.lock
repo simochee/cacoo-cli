@@ -1,0 +1,120 @@
+{
+  "lockfileVersion": 1,
+  "configVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "cacoo-cli-monorepo",
+      "devDependencies": {
+        "oxlint": "^0.16.6",
+        "typescript": "^5.8.2",
+      },
+    },
+    "apps/cli": {
+      "name": "@simochee/cacoo-cli",
+      "version": "0.1.0",
+      "bin": {
+        "cacoo": "bin/cacoo.ts",
+      },
+      "dependencies": {
+        "@repo/cacoo-api": "workspace:*",
+        "@repo/cli-utils": "workspace:*",
+        "@repo/config": "workspace:*",
+        "commander": "^13.1.0",
+        "consola": "^3.4.2",
+      },
+      "devDependencies": {
+        "@repo/test-utils": "workspace:*",
+        "bun-types": "^1.2.5",
+        "typescript": "^5.8.2",
+      },
+    },
+    "packages/cacoo-api": {
+      "name": "@repo/cacoo-api",
+      "version": "0.1.0",
+      "devDependencies": {
+        "bun-types": "^1.2.5",
+        "typescript": "^5.8.2",
+      },
+    },
+    "packages/cli-utils": {
+      "name": "@repo/cli-utils",
+      "version": "0.1.0",
+      "dependencies": {
+        "consola": "^3.4.2",
+      },
+      "devDependencies": {
+        "bun-types": "^1.2.5",
+        "typescript": "^5.8.2",
+      },
+    },
+    "packages/config": {
+      "name": "@repo/config",
+      "version": "0.1.0",
+      "dependencies": {
+        "rc9": "^3.0.0",
+        "valibot": "^1.3.1",
+      },
+      "devDependencies": {
+        "bun-types": "^1.2.5",
+        "typescript": "^5.8.2",
+      },
+    },
+    "packages/test-utils": {
+      "name": "@repo/test-utils",
+      "version": "0.1.0",
+      "devDependencies": {
+        "bun-types": "^1.2.5",
+        "typescript": "^5.8.2",
+      },
+    },
+  },
+  "packages": {
+    "@oxlint/darwin-arm64": ["@oxlint/darwin-arm64@0.16.12", "", { "os": "darwin", "cpu": "arm64" }, "sha512-G7phYhlIA4ke2nW7tHLl+E5+rvdzgGA6830D+e+y1RGllT0w2ONGdKcVTj+2pXGCw6yPmCC5fDsDEn2+RPTfxg=="],
+
+    "@oxlint/darwin-x64": ["@oxlint/darwin-x64@0.16.12", "", { "os": "darwin", "cpu": "x64" }, "sha512-P/LSOgJ6SzQ3OKEIf3HsebgokZiZ5nDuTgIL4LpNCHlkOLDu/fT8XL9pSkR5y+60v0SOxUF/+aN0Q8EmxblrCw=="],
+
+    "@oxlint/linux-arm64-gnu": ["@oxlint/linux-arm64-gnu@0.16.12", "", { "os": "linux", "cpu": "arm64" }, "sha512-0N/ZsW+cL7ZAUvOHbzMp3iApt5b/Q81q2e9RgEzkI6gUDCJK8/blWg0se/i6y9e24WH0ZC4bcxY1+Qz4ZQ+mFw=="],
+
+    "@oxlint/linux-arm64-musl": ["@oxlint/linux-arm64-musl@0.16.12", "", { "os": "linux", "cpu": "arm64" }, "sha512-MoG1SIw4RGowsOsPjm5HjRWymisRZWBea7ewMoXA5xIVQ3eqECifG0KJW0OZp96Ad8DFBEavdlNuImB2uXsMwg=="],
+
+    "@oxlint/linux-x64-gnu": ["@oxlint/linux-x64-gnu@0.16.12", "", { "os": "linux", "cpu": "x64" }, "sha512-STho8QdMLfn/0lqRU94tGPaYX8lGJccPbqeUcEr3eK5gZ5ZBdXmiHlvkcngXFEXksYC8/5VoJN7Vf3HsmkEskw=="],
+
+    "@oxlint/linux-x64-musl": ["@oxlint/linux-x64-musl@0.16.12", "", { "os": "linux", "cpu": "x64" }, "sha512-i7pzSoj9nCg/ZzOe8dCZeFWyRRWDylR9tIX04xRTq3G6PBLm6i9VrOdEkxbgM9+pCkRzUc0a9D7rbtCF34TQUA=="],
+
+    "@oxlint/win32-arm64": ["@oxlint/win32-arm64@0.16.12", "", { "os": "win32", "cpu": "arm64" }, "sha512-wcxq3IBJ7ZlONlXJxQM+7EMx+LX1nkz3ZS3R0EtDM76EOZaqe8BMkW5cXVhF8jarZTZC18oKAckW4Ng9d8adBg=="],
+
+    "@oxlint/win32-x64": ["@oxlint/win32-x64@0.16.12", "", { "os": "win32", "cpu": "x64" }, "sha512-Ae1fx7wmAcMVqzS8rLINaFRpAdh29QzHh133bEYMHzfWBYyK/hLu9g4GLwC/lEIVQu9884b8qutGfdOk6Qia3w=="],
+
+    "@repo/cacoo-api": ["@repo/cacoo-api@workspace:packages/cacoo-api"],
+
+    "@repo/cli-utils": ["@repo/cli-utils@workspace:packages/cli-utils"],
+
+    "@repo/config": ["@repo/config@workspace:packages/config"],
+
+    "@repo/test-utils": ["@repo/test-utils@workspace:packages/test-utils"],
+
+    "@simochee/cacoo-cli": ["@simochee/cacoo-cli@workspace:apps/cli"],
+
+    "@types/node": ["@types/node@25.5.0", "", { "dependencies": { "undici-types": "~7.18.0" } }, "sha512-jp2P3tQMSxWugkCUKLRPVUpGaL5MVFwF8RDuSRztfwgN1wmqJeMSbKlnEtQqU8UrhTmzEmZdu2I6v2dpp7XIxw=="],
+
+    "bun-types": ["bun-types@1.3.11", "", { "dependencies": { "@types/node": "*" } }, "sha512-1KGPpoxQWl9f6wcZh57LvrPIInQMn2TQ7jsgxqpRzg+l0QPOFvJVH7HmvHo/AiPgwXy+/Thf6Ov3EdVn1vOabg=="],
+
+    "commander": ["commander@13.1.0", "", {}, "sha512-/rFeCpNJQbhSZjGVwO9RFV3xPqbnERS8MmIQzCtD/zl6gpJuV/bMLuN92oG3F7d8oDEHHRrujSXNUr8fpjntKw=="],
+
+    "consola": ["consola@3.4.2", "", {}, "sha512-5IKcdX0nnYavi6G7TtOhwkYzyjfJlatbjMjuLSfE2kYT5pMDOilZ4OvMhi637CcDICTmz3wARPoyhqyX1Y+XvA=="],
+
+    "defu": ["defu@6.1.4", "", {}, "sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg=="],
+
+    "destr": ["destr@2.0.5", "", {}, "sha512-ugFTXCtDZunbzasqBxrK93Ik/DRYsO6S/fedkWEMKqt04xZ4csmnmwGDBAb07QWNaGMAmnTIemsYZCksjATwsA=="],
+
+    "oxlint": ["oxlint@0.16.12", "", { "optionalDependencies": { "@oxlint/darwin-arm64": "0.16.12", "@oxlint/darwin-x64": "0.16.12", "@oxlint/linux-arm64-gnu": "0.16.12", "@oxlint/linux-arm64-musl": "0.16.12", "@oxlint/linux-x64-gnu": "0.16.12", "@oxlint/linux-x64-musl": "0.16.12", "@oxlint/win32-arm64": "0.16.12", "@oxlint/win32-x64": "0.16.12" }, "bin": { "oxlint": "bin/oxlint", "oxc_language_server": "bin/oxc_language_server" } }, "sha512-1oN3P9bzE90zkbjLTc+uICVLwSR+eQaDaYVipS0BtmtmEd3ccQue0y7npCinb35YqKzIv1LZxhoU9nm5fgmQuw=="],
+
+    "rc9": ["rc9@3.0.0", "", { "dependencies": { "defu": "^6.1.4", "destr": "^2.0.5" } }, "sha512-MGOue0VqscKWQ104udASX/3GYDcKyPI4j4F8gu/jHHzglpmy9a/anZK3PNe8ug6aZFl+9GxLtdhe3kVZuMaQbA=="],
+
+    "typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
+
+    "undici-types": ["undici-types@7.18.2", "", {}, "sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w=="],
+
+    "valibot": ["valibot@1.3.1", "", { "peerDependencies": { "typescript": ">=5" }, "optionalPeers": ["typescript"] }, "sha512-sfdRir/QFM0JaF22hqTroPc5xy4DimuGQVKFrzF1YfGwaS1nJot3Y8VqMdLO2Lg27fMzat2yD3pY5PbAYO39Gg=="],
+  }
+}
