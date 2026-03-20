@@ -1,51 +1,137 @@
+import { randomBytes } from "node:crypto";
 import { CacooCommand } from "../../lib/cacoo-command";
-import { saveConfig } from "@cacoo/config";
-import { CacooClient } from "@cacoo/api";
+import { updateAuth } from "@cacoo/config";
+import {
+  CacooClient,
+  buildAuthorizationUrl,
+  exchangeAuthorizationCode,
+  startCallbackServer,
+} from "@cacoo/api";
+
+const DEFAULT_OAUTH_PORT = 5033;
 
 const login = new CacooCommand("login")
-  .summary("Authenticate with a Cacoo API key")
+  .summary("Authenticate with Cacoo")
   .description(
-    "Store a Cacoo API key for use with subsequent commands.\n" +
+    "Authenticate with the Cacoo API using an API key or OAuth.\n" +
       "You can find your API key at https://cacoo.com/profile/api",
   )
+  .option("--method <method>", "Authentication method (api-key, oauth)", "api-key")
   .option("--with-token", "Read API key from standard input")
-  .envVars([["CACOO_API_KEY", "Authenticate with an API key"]])
+  .envVars([
+    ["CACOO_API_KEY", "Authenticate with an API key"],
+    ["CACOO_OAUTH_CLIENT_ID", "OAuth client ID"],
+    ["CACOO_OAUTH_CLIENT_SECRET", "OAuth client secret"],
+    ["CACOO_OAUTH_PORT", "OAuth callback server port (default: 5033)"],
+  ])
   .examples([
     {
-      description: "Login interactively",
+      description: "Login with API key (interactive)",
       command: "cacoo auth login",
     },
     {
       description: "Login with API key from stdin",
       command: "echo 'your-api-key' | cacoo auth login --with-token",
     },
+    {
+      description: "Login with OAuth",
+      command: "cacoo auth login --method oauth",
+    },
   ])
-  .action(async (options: { withToken?: boolean }) => {
-    let apiKey: string;
-
-    if (options.withToken) {
-      apiKey = (await readStdin()).trim();
+  .action(async (options: { method: string; withToken?: boolean }) => {
+    if (options.method === "oauth") {
+      await loginWithOAuth();
     } else {
-      process.stdout.write("Enter your Cacoo API key: ");
-      apiKey = (await readStdin()).trim();
-    }
-
-    if (!apiKey) {
-      console.error("Error: No API key provided.");
-      process.exit(1);
-    }
-
-    // Verify the key works
-    const client = new CacooClient({ apiKey });
-    try {
-      const account = await client.getAccount();
-      saveConfig({ apiKey });
-      console.log(`Logged in as ${account.nickname ?? account.name}`);
-    } catch {
-      console.error("Error: Invalid API key or network error.");
-      process.exit(1);
+      await loginWithApiKey(options.withToken);
     }
   });
+
+async function loginWithApiKey(withToken?: boolean): Promise<void> {
+  let apiKey: string;
+
+  if (withToken) {
+    apiKey = (await readStdin()).trim();
+  } else {
+    process.stdout.write("Enter your Cacoo API key: ");
+    apiKey = (await readStdin()).trim();
+  }
+
+  if (!apiKey) {
+    console.error("Error: No API key provided.");
+    process.exit(1);
+  }
+
+  const client = new CacooClient({ apiKey });
+  try {
+    const account = await client.getAccount();
+    updateAuth({ method: "api-key", apiKey });
+    console.log(`Logged in as ${account.nickname ?? account.name}`);
+  } catch {
+    console.error("Error: Invalid API key or network error.");
+    process.exit(1);
+  }
+}
+
+async function loginWithOAuth(): Promise<void> {
+  const clientId = process.env.CACOO_OAUTH_CLIENT_ID;
+  const clientSecret = process.env.CACOO_OAUTH_CLIENT_SECRET;
+
+  if (!clientId || !clientSecret) {
+    console.error(
+      "Error: CACOO_OAUTH_CLIENT_ID and CACOO_OAUTH_CLIENT_SECRET must be set.\n" +
+        "Register an OAuth client in your Nulab Account settings.",
+    );
+    process.exit(1);
+  }
+
+  const port = Number(process.env.CACOO_OAUTH_PORT) || DEFAULT_OAUTH_PORT;
+  const redirectUri = `http://localhost:${port}/callback`;
+  const state = randomBytes(16).toString("hex");
+
+  const server = startCallbackServer(port);
+
+  const authUrl = buildAuthorizationUrl({ clientId, redirectUri, state });
+  console.log(`Opening browser for authentication...\n\n  ${authUrl}\n`);
+
+  // Try to open the browser
+  const { exec } = await import("node:child_process");
+  const openCommand =
+    process.platform === "darwin"
+      ? "open"
+      : process.platform === "win32"
+        ? "start"
+        : "xdg-open";
+  exec(`${openCommand} "${authUrl}"`);
+
+  try {
+    const code = await server.waitForCallback(state);
+
+    const tokens = await exchangeAuthorizationCode({
+      code,
+      clientId,
+      clientSecret,
+      redirectUri,
+    });
+
+    const client = new CacooClient({ accessToken: tokens.access_token });
+    const account = await client.getAccount();
+
+    updateAuth({
+      method: "oauth",
+      accessToken: tokens.access_token,
+      refreshToken: tokens.refresh_token,
+      clientId,
+      clientSecret,
+    });
+
+    console.log(`Logged in as ${account.nickname ?? account.name} (OAuth)`);
+  } catch (error) {
+    console.error(`Error: ${error instanceof Error ? error.message : String(error)}`);
+    process.exit(1);
+  } finally {
+    server.stop();
+  }
+}
 
 async function readStdin(): Promise<string> {
   const chunks: Buffer[] = [];

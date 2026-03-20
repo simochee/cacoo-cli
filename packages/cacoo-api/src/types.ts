@@ -80,7 +80,13 @@ export interface OrganizationList {
   count: number;
 }
 
-export interface CacooClientOptions {
-  apiKey: string;
-  baseUrl?: string;
+export type CacooClientOptions =
+  | { apiKey: string; baseUrl?: string }
+  | { accessToken: string; baseUrl?: string };
+
+export interface OAuthTokenResponse {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+  refresh_token: string;
 }

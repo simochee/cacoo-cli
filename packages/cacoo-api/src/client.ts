@@ -26,12 +26,41 @@ export class CacooApiError extends Error {
 }
 
 export class CacooClient {
-  private apiKey: string;
   private baseUrl: string;
+  private authMode: "api-key" | "oauth";
+  private apiKey?: string;
+  private accessToken?: string;
 
   constructor(options: CacooClientOptions) {
-    this.apiKey = options.apiKey;
     this.baseUrl = options.baseUrl ?? DEFAULT_BASE_URL;
+    if ("apiKey" in options) {
+      this.authMode = "api-key";
+      this.apiKey = options.apiKey;
+    } else {
+      this.authMode = "oauth";
+      this.accessToken = options.accessToken;
+    }
+  }
+
+  private buildUrl(path: string, params?: Record<string, string>): URL {
+    const url = new URL(`${this.baseUrl}${path}`);
+    if (this.authMode === "api-key") {
+      url.searchParams.set("apiKey", this.apiKey!);
+    }
+    if (params) {
+      for (const [key, value] of Object.entries(params)) {
+        url.searchParams.set(key, value);
+      }
+    }
+    return url;
+  }
+
+  private buildHeaders(extra?: Record<string, string>): Record<string, string> {
+    const headers: Record<string, string> = { ...extra };
+    if (this.authMode === "oauth") {
+      headers["Authorization"] = `Bearer ${this.accessToken}`;
+    }
+    return headers;
   }
 
   private async request<T>(
@@ -40,19 +69,13 @@ export class CacooClient {
     params?: Record<string, string>,
     body?: Record<string, string>,
   ): Promise<T> {
-    const url = new URL(`${this.baseUrl}${path}`);
-    url.searchParams.set("apiKey", this.apiKey);
+    const url = this.buildUrl(path, params);
+    const headers = this.buildHeaders(
+      body ? { "Content-Type": "application/x-www-form-urlencoded" } : undefined,
+    );
 
-    if (params) {
-      for (const [key, value] of Object.entries(params)) {
-        url.searchParams.set(key, value);
-      }
-    }
-
-    const init: RequestInit = { method };
-
+    const init: RequestInit = { method, headers };
     if (body) {
-      init.headers = { "Content-Type": "application/x-www-form-urlencoded" };
       init.body = new URLSearchParams(body).toString();
     }
 
@@ -71,13 +94,13 @@ export class CacooClient {
     path: string,
     body?: Record<string, string>,
   ): Promise<{ status: number; headers: Record<string, string>; body: unknown }> {
-    const url = new URL(`${this.baseUrl}${path}`);
-    url.searchParams.set("apiKey", this.apiKey);
+    const url = this.buildUrl(path);
+    const reqHeaders = this.buildHeaders(
+      body ? { "Content-Type": "application/x-www-form-urlencoded" } : undefined,
+    );
 
-    const init: RequestInit = { method: method.toUpperCase() };
-
+    const init: RequestInit = { method: method.toUpperCase(), headers: reqHeaders };
     if (body) {
-      init.headers = { "Content-Type": "application/x-www-form-urlencoded" };
       init.body = new URLSearchParams(body).toString();
     }
 
