@@ -38,8 +38,12 @@ const api = new CacooCommand("api")
     const client = createClient();
     const result = await client.rawRequest(upperMethod, path, bodyParams);
 
-    const json = JSON.stringify(result.body, null, 2);
-    process.stdout.write(json + "\n");
+    if (typeof result.body === "string") {
+      process.stdout.write(result.body + "\n");
+    } else {
+      const json = JSON.stringify(result.body, null, 2);
+      process.stdout.write(json + "\n");
+    }
   });
 
 export default api;
