@@ -17,7 +17,7 @@ const switchCmd = new CacooCommand("switch")
     const client = createClient();
     const org = await client.getOrganization(orgKey);
 
-    updateConfig({ organization: orgKey });
+    updateConfig((config) => ({ ...config, defaultOrganization: orgKey }));
     console.log(`Switched to organization: ${org.name} (${org.key})`);
   });
 

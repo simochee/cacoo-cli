@@ -1,5 +1,5 @@
 import { CacooClient, CacooApiError, refreshAccessToken } from "@repo/cacoo-api";
-import { resolveAuth, resolveOrganization, loadConfig, updateAuth } from "@repo/config";
+import { resolveAuth, resolveOrganization, updateAuth } from "@repo/config";
 import type { OAuthAuth } from "@repo/config";
 import { UserError } from "@repo/cli-utils";
 
@@ -9,18 +9,15 @@ export function createClient(): CacooClient {
     throw new UserError("Not authenticated. Run `cacoo auth login` or set CACOO_API_KEY.");
   }
 
-  const config = loadConfig();
-  const baseUrl = config.baseUrl;
-
   if (auth.method === "api-key") {
-    return new CacooClient({ apiKey: auth.apiKey, baseUrl });
+    return new CacooClient({ apiKey: auth.apiKey });
   }
 
-  return createOAuthClient(auth, baseUrl);
+  return createOAuthClient(auth);
 }
 
-function createOAuthClient(auth: OAuthAuth, baseUrl?: string): CacooClient {
-  let client = new CacooClient({ accessToken: auth.accessToken, baseUrl });
+function createOAuthClient(auth: OAuthAuth): CacooClient {
+  let client = new CacooClient({ accessToken: auth.accessToken });
   let refreshPromise: Promise<CacooClient> | undefined;
 
   return new Proxy(client, {
@@ -36,17 +33,11 @@ function createOAuthClient(auth: OAuthAuth, baseUrl?: string): CacooClient {
             throw error;
           }
 
-          if (!auth.clientId || !auth.clientSecret || !auth.refreshToken) {
-            throw new UserError(
-              "OAuth token expired and cannot be refreshed. Run `cacoo auth login --method oauth`.",
-            );
-          }
-
           if (!refreshPromise) {
             refreshPromise = (async () => {
               const tokens = await refreshAccessToken({
-                clientId: auth.clientId!,
-                clientSecret: auth.clientSecret!,
+                clientId: auth.clientId,
+                clientSecret: auth.clientSecret,
                 refreshToken: auth.refreshToken,
               });
 
@@ -61,7 +52,7 @@ function createOAuthClient(auth: OAuthAuth, baseUrl?: string): CacooClient {
               auth.accessToken = newAuth.accessToken;
               auth.refreshToken = newAuth.refreshToken;
 
-              const newClient = new CacooClient({ accessToken: newAuth.accessToken, baseUrl });
+              const newClient = new CacooClient({ accessToken: newAuth.accessToken });
               client = newClient;
               return newClient;
             })();
@@ -77,5 +68,5 @@ function createOAuthClient(auth: OAuthAuth, baseUrl?: string): CacooClient {
 }
 
 export function resolveOrg(orgOverride?: string): string | undefined {
-  return orgOverride ?? resolveOrganization();
+  return resolveOrganization(orgOverride);
 }

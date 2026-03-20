@@ -1,20 +1,26 @@
-export interface ApiKeyAuth {
-  method: "api-key";
-  apiKey: string;
-}
+import * as v from "valibot";
 
-export interface OAuthAuth {
-  method: "oauth";
-  accessToken: string;
-  refreshToken: string;
-  clientId?: string;
-  clientSecret?: string;
-}
+export const ApiKeyAuthSchema = v.object({
+  method: v.literal("api-key"),
+  apiKey: v.string(),
+});
 
-export type CacooAuth = ApiKeyAuth | OAuthAuth;
+export const OAuthAuthSchema = v.object({
+  method: v.literal("oauth"),
+  accessToken: v.string(),
+  refreshToken: v.string(),
+  clientId: v.string(),
+  clientSecret: v.string(),
+});
 
-export interface CacooConfig {
-  auth?: CacooAuth;
-  baseUrl?: string;
-  organization?: string;
-}
+export const AuthSchema = v.variant("method", [ApiKeyAuthSchema, OAuthAuthSchema]);
+
+export const ConfigSchema = v.object({
+  defaultOrganization: v.optional(v.string()),
+  auth: v.optional(AuthSchema),
+});
+
+export type ApiKeyAuth = v.InferOutput<typeof ApiKeyAuthSchema>;
+export type OAuthAuth = v.InferOutput<typeof OAuthAuthSchema>;
+export type CacooAuth = v.InferOutput<typeof AuthSchema>;
+export type CacooConfig = v.InferOutput<typeof ConfigSchema>;

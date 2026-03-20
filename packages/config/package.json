@@ -12,5 +12,9 @@
   "devDependencies": {
     "bun-types": "^1.2.5",
     "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "rc9": "^3.0.0",
+    "valibot": "^1.3.1"
   }
 }
