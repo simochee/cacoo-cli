@@ -1,6 +1,7 @@
 import { CacooCommand } from "../lib/cacoo-command";
-import { createClient } from "../lib/client-factory";
+import { createClient, resolveOrg } from "../lib/client-factory";
 import { orgOption } from "../lib/common-options";
+import consola from "consola";
 
 const open = new CacooCommand("open")
   .summary("Open a diagram in the browser")
@@ -8,7 +9,8 @@ const open = new CacooCommand("open")
   .argument("<diagram-id>", "The diagram ID")
   .addOption(orgOption())
   .examples([{ description: "Open diagram in browser", command: "cacoo open abc123" }])
-  .action(async (diagramId: string, _options: { org?: string }) => {
+  .action(async (diagramId: string, options: { org?: string }) => {
+    const org = resolveOrg(options.org);
     const client = createClient();
     const diagram = await client.getDiagram(diagramId);
     const url = diagram.url;
@@ -24,7 +26,7 @@ const open = new CacooCommand("open")
       execFileSync("xdg-open", [url]);
     }
 
-    console.log(`Opened ${url}`);
+    consola.info(`Opened ${url}`);
   });
 
 export default open;

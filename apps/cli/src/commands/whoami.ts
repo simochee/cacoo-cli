@@ -3,6 +3,7 @@ import { createClient } from "../lib/client-factory";
 import { jsonOption } from "../lib/common-options";
 import { outputResult } from "@repo/cli-utils";
 import type { Account } from "@repo/cacoo-api";
+import consola from "consola";
 
 const whoami = new CacooCommand("whoami")
   .summary("Show the authenticated user")

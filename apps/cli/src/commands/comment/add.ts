@@ -1,5 +1,5 @@
 import { CacooCommand } from "../../lib/cacoo-command";
-import { createClient } from "../../lib/client-factory";
+import { createClient, resolveOrg } from "../../lib/client-factory";
 import { jsonOption, orgOption } from "../../lib/common-options";
 import { outputResult } from "@repo/cli-utils";
 import type { Comment } from "@repo/cacoo-api";
@@ -18,6 +18,7 @@ const add = new CacooCommand("add")
     },
   ])
   .action(async (diagramId: string, options: { body: string; json?: string; org?: string }) => {
+    const org = resolveOrg(options.org);
     const client = createClient();
     const comment = await client.createComment(diagramId, options.body);
 

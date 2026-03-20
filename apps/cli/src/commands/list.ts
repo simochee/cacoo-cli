@@ -1,5 +1,5 @@
 import { CacooCommand } from "../lib/cacoo-command";
-import { createClient } from "../lib/client-factory";
+import { createClient, resolveOrg } from "../lib/client-factory";
 import {
   offsetOption,
   limitOption,
@@ -9,6 +9,7 @@ import {
 } from "../lib/common-options";
 import { outputResult, printTable } from "@repo/cli-utils";
 import type { Diagram } from "@repo/cacoo-api";
+import consola from "consola";
 
 const list = new CacooCommand("list")
   .summary("List diagrams")
@@ -36,6 +37,7 @@ const list = new CacooCommand("list")
       json?: string;
       org?: string;
     }) => {
+      const org = resolveOrg(options.org);
       const client = createClient();
       const result = await client.listDiagrams({
         offset: options.offset,
@@ -47,7 +49,7 @@ const list = new CacooCommand("list")
 
       outputResult(result.result, options.json, (diagrams: Diagram[]) => {
         if (diagrams.length === 0) {
-          console.log("No diagrams found.");
+          consola.info("No diagrams found.");
           return;
         }
         printTable(

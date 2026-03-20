@@ -1,8 +1,9 @@
 import { CacooCommand } from "../lib/cacoo-command";
-import { createClient } from "../lib/client-factory";
+import { createClient, resolveOrg } from "../lib/client-factory";
 import { jsonOption, orgOption } from "../lib/common-options";
 import { outputResult } from "@repo/cli-utils";
 import type { Diagram } from "@repo/cacoo-api";
+import consola from "consola";
 
 const view = new CacooCommand("view")
   .summary("View a diagram")
@@ -18,21 +19,22 @@ const view = new CacooCommand("view")
     },
   ])
   .action(async (diagramId: string, options: { json?: string; org?: string }) => {
+    const org = resolveOrg(options.org);
     const client = createClient();
     const diagram = await client.getDiagram(diagramId);
 
     outputResult(diagram, options.json, (d: Diagram) => {
-      console.log(`Title:       ${d.title}`);
-      console.log(`ID:          ${d.diagramId}`);
-      console.log(`Owner:       ${d.ownerNickname ?? d.ownerName}`);
-      console.log(`Security:    ${d.security}`);
-      console.log(`Sheets:      ${d.sheetCount}`);
-      console.log(`Folder:      ${d.folderName}`);
-      console.log(`URL:         ${d.url}`);
-      console.log(`Created:     ${d.created}`);
-      console.log(`Updated:     ${d.updated}`);
+      consola.log(`Title:       ${d.title}`);
+      consola.log(`ID:          ${d.diagramId}`);
+      consola.log(`Owner:       ${d.ownerNickname ?? d.ownerName}`);
+      consola.log(`Security:    ${d.security}`);
+      consola.log(`Sheets:      ${d.sheetCount}`);
+      consola.log(`Folder:      ${d.folderName}`);
+      consola.log(`URL:         ${d.url}`);
+      consola.log(`Created:     ${d.created}`);
+      consola.log(`Updated:     ${d.updated}`);
       if (d.description) {
-        console.log(`Description: ${d.description}`);
+        consola.log(`Description: ${d.description}`);
       }
     });
   });

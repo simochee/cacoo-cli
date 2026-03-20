@@ -1,5 +1,5 @@
 import { CacooCommand } from "../lib/cacoo-command";
-import { createClient } from "../lib/client-factory";
+import { createClient, resolveOrg } from "../lib/client-factory";
 import { jsonOption, orgOption } from "../lib/common-options";
 import { outputResult } from "@repo/cli-utils";
 import type { Diagram } from "@repo/cacoo-api";
@@ -12,6 +12,7 @@ const copy = new CacooCommand("copy")
   .addOption(orgOption())
   .examples([{ description: "Copy a diagram", command: "cacoo copy abc123" }])
   .action(async (diagramId: string, options: { json?: string; org?: string }) => {
+    const org = resolveOrg(options.org);
     const client = createClient();
     const diagram = await client.copyDiagram(diagramId);
 
