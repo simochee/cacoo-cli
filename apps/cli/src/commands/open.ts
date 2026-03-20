@@ -13,15 +13,15 @@ const open = new CacooCommand("open")
     const diagram = await client.getDiagram(diagramId);
     const url = diagram.url;
 
-    const { execSync } = await import("node:child_process");
+    const { execFileSync } = await import("node:child_process");
     const platform = process.platform;
 
     if (platform === "darwin") {
-      execSync(`open "${url}"`);
+      execFileSync("open", [url]);
     } else if (platform === "win32") {
-      execSync(`start "" "${url}"`);
+      execFileSync("cmd", ["/c", "start", "", url]);
     } else {
-      execSync(`xdg-open "${url}"`);
+      execFileSync("xdg-open", [url]);
     }
 
     console.log(`Opened ${url}`);

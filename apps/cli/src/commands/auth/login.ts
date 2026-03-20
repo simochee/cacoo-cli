@@ -94,14 +94,15 @@ async function loginWithOAuth(): Promise<void> {
   console.log(`Opening browser for authentication...\n\n  ${authUrl}\n`);
 
   // Try to open the browser
-  const { exec } = await import("node:child_process");
-  const openCommand =
-    process.platform === "darwin"
-      ? "open"
-      : process.platform === "win32"
-        ? "start"
-        : "xdg-open";
-  exec(`${openCommand} "${authUrl}"`);
+  const { execFile } = await import("node:child_process");
+  const platform = process.platform;
+  if (platform === "darwin") {
+    execFile("open", [authUrl]);
+  } else if (platform === "win32") {
+    execFile("cmd", ["/c", "start", "", authUrl]);
+  } else {
+    execFile("xdg-open", [authUrl]);
+  }
 
   try {
     const code = await server.waitForCallback(state);
