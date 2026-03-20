@@ -1,8 +1,8 @@
 import { CacooCommand } from "../../lib/cacoo-command";
 import { createClient } from "../../lib/client-factory";
 import { jsonOption } from "../../lib/common-options";
-import { outputResult } from "@cacoo/cli-utils";
-import type { Organization } from "@cacoo/api";
+import { outputResult } from "@repo/cli-utils";
+import type { Organization } from "@repo/cacoo-api";
 
 const view = new CacooCommand("view")
   .summary("View organization details")

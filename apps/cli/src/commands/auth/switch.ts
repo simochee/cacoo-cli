@@ -1,5 +1,5 @@
 import { CacooCommand } from "../../lib/cacoo-command";
-import { updateConfig } from "@cacoo/config";
+import { updateConfig } from "@repo/config";
 import { createClient } from "../../lib/client-factory";
 
 const switchCmd = new CacooCommand("switch")

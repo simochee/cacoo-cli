@@ -1,5 +1,5 @@
 import { CacooCommand } from "../../lib/cacoo-command";
-import { loadConfig, saveConfig } from "@cacoo/config";
+import { loadConfig, saveConfig } from "@repo/config";
 
 const logout = new CacooCommand("logout")
   .summary("Remove stored authentication")

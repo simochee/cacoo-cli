@@ -1,8 +1,8 @@
 import { CacooCommand } from "../../lib/cacoo-command";
 import { createClient } from "../../lib/client-factory";
 import { jsonOption } from "../../lib/common-options";
-import { outputResult, printTable } from "@cacoo/cli-utils";
-import type { Organization } from "@cacoo/api";
+import { outputResult, printTable } from "@repo/cli-utils";
+import type { Organization } from "@repo/cacoo-api";
 
 const list = new CacooCommand("list")
   .summary("List organizations")

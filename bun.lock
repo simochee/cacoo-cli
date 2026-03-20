@@ -10,25 +10,25 @@
       },
     },
     "apps/cli": {
-      "name": "@cacoo/cli",
+      "name": "@simochee/cacoo-cli",
       "version": "0.1.0",
       "bin": {
         "cacoo": "bin/cacoo.ts",
       },
       "dependencies": {
-        "@cacoo/api": "workspace:*",
-        "@cacoo/cli-utils": "workspace:*",
-        "@cacoo/config": "workspace:*",
+        "@repo/cacoo-api": "workspace:*",
+        "@repo/cli-utils": "workspace:*",
+        "@repo/config": "workspace:*",
         "commander": "^13.1.0",
       },
       "devDependencies": {
-        "@cacoo/test-utils": "workspace:*",
+        "@repo/test-utils": "workspace:*",
         "bun-types": "^1.2.5",
         "typescript": "^5.8.2",
       },
     },
     "packages/cacoo-api": {
-      "name": "@cacoo/api",
+      "name": "@repo/cacoo-api",
       "version": "0.1.0",
       "devDependencies": {
         "bun-types": "^1.2.5",
@@ -36,7 +36,7 @@
       },
     },
     "packages/cli-utils": {
-      "name": "@cacoo/cli-utils",
+      "name": "@repo/cli-utils",
       "version": "0.1.0",
       "devDependencies": {
         "bun-types": "^1.2.5",
@@ -44,7 +44,7 @@
       },
     },
     "packages/config": {
-      "name": "@cacoo/config",
+      "name": "@repo/config",
       "version": "0.1.0",
       "devDependencies": {
         "bun-types": "^1.2.5",
@@ -52,7 +52,7 @@
       },
     },
     "packages/test-utils": {
-      "name": "@cacoo/test-utils",
+      "name": "@repo/test-utils",
       "version": "0.1.0",
       "devDependencies": {
         "bun-types": "^1.2.5",
@@ -61,16 +61,6 @@
     },
   },
   "packages": {
-    "@cacoo/api": ["@cacoo/api@workspace:packages/cacoo-api"],
-
-    "@cacoo/cli": ["@cacoo/cli@workspace:apps/cli"],
-
-    "@cacoo/cli-utils": ["@cacoo/cli-utils@workspace:packages/cli-utils"],
-
-    "@cacoo/config": ["@cacoo/config@workspace:packages/config"],
-
-    "@cacoo/test-utils": ["@cacoo/test-utils@workspace:packages/test-utils"],
-
     "@oxlint/darwin-arm64": ["@oxlint/darwin-arm64@0.16.12", "", { "os": "darwin", "cpu": "arm64" }, "sha512-G7phYhlIA4ke2nW7tHLl+E5+rvdzgGA6830D+e+y1RGllT0w2ONGdKcVTj+2pXGCw6yPmCC5fDsDEn2+RPTfxg=="],
 
     "@oxlint/darwin-x64": ["@oxlint/darwin-x64@0.16.12", "", { "os": "darwin", "cpu": "x64" }, "sha512-P/LSOgJ6SzQ3OKEIf3HsebgokZiZ5nDuTgIL4LpNCHlkOLDu/fT8XL9pSkR5y+60v0SOxUF/+aN0Q8EmxblrCw=="],
@@ -86,6 +76,16 @@
     "@oxlint/win32-arm64": ["@oxlint/win32-arm64@0.16.12", "", { "os": "win32", "cpu": "arm64" }, "sha512-wcxq3IBJ7ZlONlXJxQM+7EMx+LX1nkz3ZS3R0EtDM76EOZaqe8BMkW5cXVhF8jarZTZC18oKAckW4Ng9d8adBg=="],
 
     "@oxlint/win32-x64": ["@oxlint/win32-x64@0.16.12", "", { "os": "win32", "cpu": "x64" }, "sha512-Ae1fx7wmAcMVqzS8rLINaFRpAdh29QzHh133bEYMHzfWBYyK/hLu9g4GLwC/lEIVQu9884b8qutGfdOk6Qia3w=="],
+
+    "@repo/cacoo-api": ["@repo/cacoo-api@workspace:packages/cacoo-api"],
+
+    "@repo/cli-utils": ["@repo/cli-utils@workspace:packages/cli-utils"],
+
+    "@repo/config": ["@repo/config@workspace:packages/config"],
+
+    "@repo/test-utils": ["@repo/test-utils@workspace:packages/test-utils"],
+
+    "@simochee/cacoo-cli": ["@simochee/cacoo-cli@workspace:apps/cli"],
 
     "@types/node": ["@types/node@25.5.0", "", { "dependencies": { "undici-types": "~7.18.0" } }, "sha512-jp2P3tQMSxWugkCUKLRPVUpGaL5MVFwF8RDuSRztfwgN1wmqJeMSbKlnEtQqU8UrhTmzEmZdu2I6v2dpp7XIxw=="],
 

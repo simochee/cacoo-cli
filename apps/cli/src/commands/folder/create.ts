@@ -1,8 +1,8 @@
 import { CacooCommand } from "../../lib/cacoo-command";
 import { createClient } from "../../lib/client-factory";
 import { jsonOption, orgOption } from "../../lib/common-options";
-import { outputResult } from "@cacoo/cli-utils";
-import type { Folder } from "@cacoo/api";
+import { outputResult } from "@repo/cli-utils";
+import type { Folder } from "@repo/cacoo-api";
 
 const create = new CacooCommand("create")
   .summary("Create a folder")

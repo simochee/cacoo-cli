@@ -1,6 +1,6 @@
 import { CacooCommand } from "../lib/cacoo-command";
 import { createClient } from "../lib/client-factory";
-import { UserError } from "@cacoo/cli-utils";
+import { UserError } from "@repo/cli-utils";
 
 const VALID_METHODS = new Set(["GET", "POST", "PUT", "DELETE", "PATCH"]);
 

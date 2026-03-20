@@ -13,10 +13,10 @@
     "rootDir": ".",
     "types": ["bun-types"],
     "paths": {
-      "@cacoo/api": ["./packages/cacoo-api/src/index.ts"],
-      "@cacoo/cli-utils": ["./packages/cli-utils/src/index.ts"],
-      "@cacoo/config": ["./packages/config/src/index.ts"],
-      "@cacoo/test-utils": ["./packages/test-utils/src/index.ts"]
+      "@repo/cacoo-api": ["./packages/cacoo-api/src/index.ts"],
+      "@repo/cli-utils": ["./packages/cli-utils/src/index.ts"],
+      "@repo/config": ["./packages/config/src/index.ts"],
+      "@repo/test-utils": ["./packages/test-utils/src/index.ts"]
     }
   },
   "include": ["apps/*/src/**/*.ts", "packages/*/src/**/*.ts"]

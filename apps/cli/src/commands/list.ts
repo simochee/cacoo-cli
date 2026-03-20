@@ -7,8 +7,8 @@ import {
   sortOption,
   orgOption,
 } from "../lib/common-options";
-import { outputResult, printTable } from "@cacoo/cli-utils";
-import type { Diagram } from "@cacoo/api";
+import { outputResult, printTable } from "@repo/cli-utils";
+import type { Diagram } from "@repo/cacoo-api";
 
 const list = new CacooCommand("list")
   .summary("List diagrams")

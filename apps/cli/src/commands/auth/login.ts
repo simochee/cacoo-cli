@@ -1,12 +1,12 @@
 import { randomBytes } from "node:crypto";
 import { CacooCommand } from "../../lib/cacoo-command";
-import { updateAuth } from "@cacoo/config";
+import { updateAuth } from "@repo/config";
 import {
   CacooClient,
   buildAuthorizationUrl,
   exchangeAuthorizationCode,
   startCallbackServer,
-} from "@cacoo/api";
+} from "@repo/cacoo-api";
 
 const DEFAULT_OAUTH_PORT = 5033;
 

@@ -1,5 +1,5 @@
 {
-  "name": "@cacoo/cli",
+  "name": "@simochee/cacoo-cli",
   "version": "0.1.0",
   "private": true,
   "bin": {
@@ -14,13 +14,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@cacoo/api": "workspace:*",
-    "@cacoo/cli-utils": "workspace:*",
-    "@cacoo/config": "workspace:*",
+    "@repo/cacoo-api": "workspace:*",
+    "@repo/cli-utils": "workspace:*",
+    "@repo/config": "workspace:*",
     "commander": "^13.1.0"
   },
   "devDependencies": {
-    "@cacoo/test-utils": "workspace:*",
+    "@repo/test-utils": "workspace:*",
     "bun-types": "^1.2.5",
     "typescript": "^5.8.2"
   }

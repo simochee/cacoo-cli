@@ -1,6 +1,6 @@
 import { CacooCommand } from "../../lib/cacoo-command";
-import { resolveAuth, resolveOrganization, getConfigPath } from "@cacoo/config";
-import { CacooClient } from "@cacoo/api";
+import { resolveAuth, resolveOrganization, getConfigPath } from "@repo/config";
+import { CacooClient } from "@repo/cacoo-api";
 
 const status = new CacooCommand("status")
   .summary("Show authentication status")

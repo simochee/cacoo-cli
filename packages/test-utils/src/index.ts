@@ -1,4 +1,4 @@
-import type { CacooClientOptions } from "@cacoo/api";
+import type { CacooClientOptions } from "@repo/cacoo-api";
 
 export function createMockClient(): {
   options: CacooClientOptions;

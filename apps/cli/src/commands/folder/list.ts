@@ -1,8 +1,8 @@
 import { CacooCommand } from "../../lib/cacoo-command";
 import { createClient } from "../../lib/client-factory";
 import { offsetOption, limitOption, jsonOption, orgOption } from "../../lib/common-options";
-import { outputResult, printTable } from "@cacoo/cli-utils";
-import type { Folder } from "@cacoo/api";
+import { outputResult, printTable } from "@repo/cli-utils";
+import type { Folder } from "@repo/cacoo-api";
 
 const list = new CacooCommand("list")
   .summary("List folders")

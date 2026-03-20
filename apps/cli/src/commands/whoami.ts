@@ -1,8 +1,8 @@
 import { CacooCommand } from "../lib/cacoo-command";
 import { createClient } from "../lib/client-factory";
 import { jsonOption } from "../lib/common-options";
-import { outputResult } from "@cacoo/cli-utils";
-import type { Account } from "@cacoo/api";
+import { outputResult } from "@repo/cli-utils";
+import type { Account } from "@repo/cacoo-api";
 
 const whoami = new CacooCommand("whoami")
   .summary("Show the authenticated user")

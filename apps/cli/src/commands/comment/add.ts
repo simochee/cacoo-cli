@@ -1,8 +1,8 @@
 import { CacooCommand } from "../../lib/cacoo-command";
 import { createClient } from "../../lib/client-factory";
 import { jsonOption, orgOption } from "../../lib/common-options";
-import { outputResult } from "@cacoo/cli-utils";
-import type { Comment } from "@cacoo/api";
+import { outputResult } from "@repo/cli-utils";
+import type { Comment } from "@repo/cacoo-api";
 
 const add = new CacooCommand("add")
   .summary("Add a comment to a diagram")

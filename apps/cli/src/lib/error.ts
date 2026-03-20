@@ -1,6 +1,6 @@
 import { CommanderError } from "commander";
-import { CacooApiError } from "@cacoo/api";
-import { UserError } from "@cacoo/cli-utils";
+import { CacooApiError } from "@repo/cacoo-api";
+import { UserError } from "@repo/cli-utils";
 
 export function handleError(error: unknown): never {
   if (error instanceof CommanderError) {

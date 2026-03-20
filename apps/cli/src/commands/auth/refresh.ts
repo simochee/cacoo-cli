@@ -1,6 +1,6 @@
 import { CacooCommand } from "../../lib/cacoo-command";
-import { loadConfig, updateAuth } from "@cacoo/config";
-import { CacooClient, refreshAccessToken } from "@cacoo/api";
+import { loadConfig, updateAuth } from "@repo/config";
+import { CacooClient, refreshAccessToken } from "@repo/cacoo-api";
 
 const refresh = new CacooCommand("refresh")
   .summary("Refresh the OAuth access token")

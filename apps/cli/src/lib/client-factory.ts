@@ -1,7 +1,7 @@
-import { CacooClient, CacooApiError, refreshAccessToken } from "@cacoo/api";
-import { resolveAuth, resolveOrganization, loadConfig, updateAuth } from "@cacoo/config";
-import type { OAuthAuth } from "@cacoo/config";
-import { UserError } from "@cacoo/cli-utils";
+import { CacooClient, CacooApiError, refreshAccessToken } from "@repo/cacoo-api";
+import { resolveAuth, resolveOrganization, loadConfig, updateAuth } from "@repo/config";
+import type { OAuthAuth } from "@repo/config";
+import { UserError } from "@repo/cli-utils";
 
 export function createClient(): CacooClient {
   const auth = resolveAuth();

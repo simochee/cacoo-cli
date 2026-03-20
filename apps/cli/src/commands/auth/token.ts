@@ -1,5 +1,5 @@
 import { CacooCommand } from "../../lib/cacoo-command";
-import { resolveAuth } from "@cacoo/config";
+import { resolveAuth } from "@repo/config";
 
 const token = new CacooCommand("token")
   .summary("Print the auth token")
