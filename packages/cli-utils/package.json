@@ -12,5 +12,8 @@
   "devDependencies": {
     "bun-types": "^1.2.5",
     "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "consola": "^3.4.2"
   }
 }

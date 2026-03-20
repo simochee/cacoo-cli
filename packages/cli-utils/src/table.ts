@@ -1,3 +1,5 @@
+import consola from "consola";
+
 export function formatTable(headers: string[], rows: string[][]): string {
   const widths = headers.map((h, i) => {
     const colValues = rows.map((r) => (r[i] ?? "").length);
@@ -13,5 +15,5 @@ export function formatTable(headers: string[], rows: string[][]): string {
 }
 
 export function printTable(headers: string[], rows: string[][]): void {
-  console.log(formatTable(headers, rows));
+  consola.log(formatTable(headers, rows));
 }
