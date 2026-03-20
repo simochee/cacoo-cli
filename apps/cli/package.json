@@ -17,7 +17,8 @@
     "@repo/cacoo-api": "workspace:*",
     "@repo/cli-utils": "workspace:*",
     "@repo/config": "workspace:*",
-    "commander": "^13.1.0"
+    "commander": "^13.1.0",
+    "consola": "^3.4.2"
   },
   "devDependencies": {
     "@repo/test-utils": "workspace:*",
